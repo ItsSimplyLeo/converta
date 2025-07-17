@@ -1,10 +1,15 @@
 package dev.converta.bot
 
+import dev.converta.bot.listener.SlashCommandListener
 import io.github.cdimascio.dotenv.dotenv
+import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
-import net.dv8tion.jda.api.hooks.ListenerAdapter
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import net.dv8tion.jda.api.interactions.commands.Command.Choice
+import net.dv8tion.jda.api.interactions.commands.OptionType
+import net.dv8tion.jda.api.interactions.commands.build.Commands
+import net.dv8tion.jda.api.interactions.commands.build.OptionData
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData
 
 fun main() {
     val dotenv = dotenv()
@@ -12,23 +17,49 @@ fun main() {
 
     val jda = JDABuilder.createDefault(token)
         .setActivity(Activity.playing("Converting units with Converta!"))
-        .addEventListeners(MessageListener())
+        .addEventListeners(SlashCommandListener())
         .build()
+
+    registerSlashCommands(jda)
 
     jda.awaitReady()
     println("Converta is now online!")
 }
 
-class MessageListener : ListenerAdapter() {
-    override fun onMessageReceived(event: MessageReceivedEvent) {
-        if (event.author.isBot) return
 
-        val message = event.message.contentRaw.lowercase()
+fun registerSlashCommands(jda: JDA) {
+    val temperatureUnits = listOf(
+        Choice("Celsius (°C)", "c"),
+        Choice("Fahrenheit (°F)", "f"),
+        Choice("Kelvin (K)", "k")
+    )
 
-        if (message.startsWith("!convert ")) {
-            val args = message.removePrefix("!convert ").trim()
+    val lengthUnits = listOf(
+        Choice("Meters (m)", "m"),
+        Choice("Kilometers (km)", "km"),
+        Choice("Miles (mi)", "mi"),
+        Choice("Feet (ft)", "ft"),
+        Choice("Inches (in)", "in"),
+        Choice("Centimeters (cm)", "cm"),
+        Choice("Millimeters (mm)", "mm")
+    )
 
-            event.channel.sendMessage("You asked to convert: `$args`").queue()
-        }
-    }
+    val temperatureCommand = SubcommandData("temperature", "Convert between Celsius, Fahrenheit, and Kelvin")
+        .addOptions(
+            OptionData(OptionType.NUMBER, "value", "The temperature value to convert", true),
+            OptionData(OptionType.STRING, "from", "The unit to convert from", true).addChoices(temperatureUnits),
+            OptionData(OptionType.STRING, "to", "The unit to convert to", true).addChoices(temperatureUnits)
+        )
+
+    val lengthCommand = SubcommandData("length", "Convert between common length units")
+        .addOptions(
+            OptionData(OptionType.NUMBER, "value", "The length value to convert", true),
+            OptionData(OptionType.STRING, "from", "The unit to convert from", true).addChoices(lengthUnits),
+            OptionData(OptionType.STRING, "to", "The unit to convert to", true).addChoices(lengthUnits)
+        )
+
+    jda.updateCommands().addCommands(
+        Commands.slash("convert", "Convert temperature, length, and more")
+            .addSubcommands(temperatureCommand, lengthCommand)
+    ).queue()
 }
