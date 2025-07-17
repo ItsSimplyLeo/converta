@@ -100,7 +100,7 @@ class ConvertaBot {
 
         jda.updateCommands().addCommands(
             Commands.slash("convert", "Convert temperature, length, data and more")
-                .addSubcommands(temperatureCommand, lengthCommand, dataCommand),
+                .addSubcommands(dataCommand, lengthCommand, speedCommand, temperatureCommand),
             Commands.slash("convertabot", "Converta bot commands")
                 .addSubcommands(SubcommandData("about", "Information about the Converta bot"))
         ).queue()
