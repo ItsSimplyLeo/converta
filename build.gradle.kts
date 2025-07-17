@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
     implementation("net.dv8tion:JDA:5.6.1")   // Discord API library
+    implementation("ch.qos.logback:logback-classic:1.5.18") // Logging framework
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")  // Environment variable loader
     implementation(kotlin("stdlib"))
 }

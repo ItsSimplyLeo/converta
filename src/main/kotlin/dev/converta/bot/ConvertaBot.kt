@@ -19,7 +19,6 @@ class ConvertaBot {
     lateinit var startupTime: Instant
     lateinit var jda: JDA
 
-
     fun start() {
         jda = JDABuilder.createDefault(token)
             .setActivity(Activity.playing("Converting units with Converta!"))
