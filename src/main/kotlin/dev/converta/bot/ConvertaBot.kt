@@ -33,22 +33,6 @@ class ConvertaBot {
     }
 
     private fun registerSlashCommands() {
-        val temperatureUnits = listOf(
-            Choice("Celsius (°C)", "c"),
-            Choice("Fahrenheit (°F)", "f"),
-            Choice("Kelvin (K)", "k")
-        )
-
-        val lengthUnits = listOf(
-            Choice("Meters (m)", "m"),
-            Choice("Kilometers (km)", "km"),
-            Choice("Miles (mi)", "mi"),
-            Choice("Feet (ft)", "ft"),
-            Choice("Inches (in)", "in"),
-            Choice("Centimeters (cm)", "cm"),
-            Choice("Millimeters (mm)", "mm")
-        )
-
         val dataUnits = listOf(
             Choice("Bit (b)", "b"),
             Choice("Byte (B)", "B"),
@@ -62,11 +46,35 @@ class ConvertaBot {
             Choice("Terabyte (TB)", "TB")
         )
 
-        val temperatureCommand = SubcommandData("temperature", "Convert between Celsius, Fahrenheit, and Kelvin")
+        val lengthUnits = listOf(
+            Choice("Meters (m)", "m"),
+            Choice("Kilometers (km)", "km"),
+            Choice("Miles (mi)", "mi"),
+            Choice("Feet (ft)", "ft"),
+            Choice("Inches (in)", "in"),
+            Choice("Centimeters (cm)", "cm"),
+            Choice("Millimeters (mm)", "mm")
+        )
+
+        val speedUnits = listOf(
+            Choice("Meters per second (m/s)", "m/s"),
+            Choice("Kilometers per hour (km/h)", "km/h"),
+            Choice("Miles per hour (mi/h)", "mi/h"),
+            Choice("Feet per second (ft/s)", "ft/s"),
+            Choice("Knots", "knots")
+        )
+
+        val temperatureUnits = listOf(
+            Choice("Celsius (°C)", "c"),
+            Choice("Fahrenheit (°F)", "f"),
+            Choice("Kelvin (K)", "k")
+        )
+
+        val dataCommand = SubcommandData("data", "Convert between common digital storage units")
             .addOptions(
-                OptionData(OptionType.NUMBER, "value", "The temperature value to convert", true),
-                OptionData(OptionType.STRING, "from", "The unit to convert from", true).addChoices(temperatureUnits),
-                OptionData(OptionType.STRING, "to", "The unit to convert to", true).addChoices(temperatureUnits)
+                OptionData(OptionType.NUMBER, "value", "The data value to convert", true),
+                OptionData(OptionType.STRING, "from", "The unit to convert from", true).addChoices(dataUnits),
+                OptionData(OptionType.STRING, "to", "The unit to convert to", true).addChoices(dataUnits)
             )
 
         val lengthCommand = SubcommandData("length", "Convert between common length units")
@@ -75,12 +83,19 @@ class ConvertaBot {
                 OptionData(OptionType.STRING, "from", "The unit to convert from", true).addChoices(lengthUnits),
                 OptionData(OptionType.STRING, "to", "The unit to convert to", true).addChoices(lengthUnits)
             )
-        
-        val dataCommand = SubcommandData("data", "Convert between common digital storage units")
+
+        val speedCommand = SubcommandData("speed", "Convert between common speed units")
             .addOptions(
-                OptionData(OptionType.NUMBER, "value", "The data value to convert", true),
-                OptionData(OptionType.STRING, "from", "The unit to convert from", true).addChoices(dataUnits),
-                OptionData(OptionType.STRING, "to", "The unit to convert to", true).addChoices(dataUnits)
+                OptionData(OptionType.NUMBER, "value", "The speed value to convert", true),
+                OptionData(OptionType.STRING, "from", "The unit to convert from", true).addChoices(speedUnits),
+                OptionData(OptionType.STRING, "to", "The unit to convert to", true).addChoices(speedUnits)
+            )
+
+        val temperatureCommand = SubcommandData("temperature", "Convert between Celsius, Fahrenheit, and Kelvin")
+            .addOptions(
+                OptionData(OptionType.NUMBER, "value", "The temperature value to convert", true),
+                OptionData(OptionType.STRING, "from", "The unit to convert from", true).addChoices(temperatureUnits),
+                OptionData(OptionType.STRING, "to", "The unit to convert to", true).addChoices(temperatureUnits)
             )
 
         jda.updateCommands().addCommands(

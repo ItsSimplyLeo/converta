@@ -3,6 +3,7 @@ package dev.converta.bot.listener
 import dev.converta.bot.ConvertaBot
 import dev.converta.bot.converter.DataConverter
 import dev.converta.bot.converter.LengthConverter
+import dev.converta.bot.converter.SpeedConverter
 import dev.converta.bot.converter.TemperatureConverter
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
@@ -19,8 +20,9 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
             "convert" -> {
                 when (event.subcommandName) {
                     "data" -> handleData(event)
-                    "temperature" -> handleTemperature(event)
+                    "speed" -> handleSpeed(event)
                     "length" -> handleLength(event)
+                    "temperature" -> handleTemperature(event)
                 }
             }
             "convertabot" -> {
@@ -55,6 +57,20 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
         event.replyEmbeds(embed).queue()
     }
 
+    private fun formatDuration(duration: Duration): String {
+        val days = duration.toDays()
+        val hours = duration.minus(days, ChronoUnit.DAYS).toHours()
+        val minutes = duration.minus(days, ChronoUnit.DAYS).minus(hours, ChronoUnit.HOURS).toMinutes()
+        val seconds = duration.minus(days, ChronoUnit.DAYS).minus(hours, ChronoUnit.HOURS).minus(minutes, ChronoUnit.MINUTES).seconds
+
+        return buildString {
+            if (days > 0) append("${days}d ")
+            if (hours > 0) append("${hours}h ")
+            if (minutes > 0) append("${minutes}m ")
+            append("${seconds}s")
+        }.trim()
+    }
+
     private fun handleData(event: SlashCommandInteractionEvent) {
         val value = event.getOption("value")?.asDouble
         val from = event.getOption("from")?.asString
@@ -69,21 +85,6 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
             return
         }
         event.reply("${value.format()} $from = ${result.format()} $to").queue()
-    }
-
-
-    private fun formatDuration(duration: Duration): String {
-        val days = duration.toDays()
-        val hours = duration.minus(days, ChronoUnit.DAYS).toHours()
-        val minutes = duration.minus(days, ChronoUnit.DAYS).minus(hours, ChronoUnit.HOURS).toMinutes()
-        val seconds = duration.minus(days, ChronoUnit.DAYS).minus(hours, ChronoUnit.HOURS).minus(minutes, ChronoUnit.MINUTES).seconds
-
-        return buildString {
-            if (days > 0) append("${days}d ")
-            if (hours > 0) append("${hours}h ")
-            if (minutes > 0) append("${minutes}m ")
-            append("${seconds}s")
-        }.trim()
     }
 
     private fun handleLength(event: SlashCommandInteractionEvent) {
@@ -108,6 +109,30 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
 
         val rounded = (round(result * 100)) / 100.0
         event.reply(":white_check_mark: `$value ${fromUnit.uppercase()}` is equal to `$rounded ${toUnit.uppercase()}`").queue()
+    }
+
+    private fun handleSpeed(event: SlashCommandInteractionEvent) {
+        val value = event.getOption("value")?.asDouble ?: run {
+            event.reply("Please provide a valid number for value.").setEphemeral(true).queue()
+            return
+        }
+        val from = event.getOption("from")?.asString?.lowercase() ?: run {
+            event.reply("Please specify the unit to convert from.").setEphemeral(true).queue()
+            return
+        }
+        val to = event.getOption("to")?.asString?.lowercase() ?: run {
+            event.reply("Please specify the unit to convert to.").setEphemeral(true).queue()
+            return
+        }
+
+        val result = SpeedConverter.convert(value, from, to)
+        if (result == null) {
+            event.reply("Invalid conversion path. Supported units: m/s, km/h, mi/h, ft/s, knots").setEphemeral(true).queue()
+            return
+        }
+
+        val rounded = (round(result * 100)) / 100.0
+        event.reply(":white_check_mark: `$value $from` is equal to `$rounded $to`").queue()
     }
 
     private fun handleTemperature(event: SlashCommandInteractionEvent) {
