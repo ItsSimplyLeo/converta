@@ -1,6 +1,7 @@
 package dev.converta.bot.listener
 
 import dev.converta.bot.ConvertaBot
+import dev.converta.bot.converter.DataConverter
 import dev.converta.bot.converter.LengthConverter
 import dev.converta.bot.converter.TemperatureConverter
 import net.dv8tion.jda.api.EmbedBuilder
@@ -17,6 +18,7 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
         when (event.name) {
             "convert" -> {
                 when (event.subcommandName) {
+                    "data" -> handleData(event)
                     "temperature" -> handleTemperature(event)
                     "length" -> handleLength(event)
                 }
@@ -52,6 +54,23 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
 
         event.replyEmbeds(embed).queue()
     }
+
+    private fun handleData(event: SlashCommandInteractionEvent) {
+        val value = event.getOption("value")?.asDouble
+        val from = event.getOption("from")?.asString
+        val to = event.getOption("to")?.asString
+        if (value == null || from == null || to == null) {
+            event.reply("Missing required options.").setEphemeral(true).queue()
+            return
+        }
+        val result = DataConverter.convert(value, from, to)
+        if (result == null) {
+            event.reply("Invalid unit selection.").setEphemeral(true).queue()
+            return
+        }
+        event.reply("${value.format()} $from = ${result.format()} $to").queue()
+    }
+
 
     private fun formatDuration(duration: Duration): String {
         val days = duration.toDays()
@@ -114,4 +133,10 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
         val rounded = (round(result * 100)) / 100.0
         event.reply(":white_check_mark: `$value°${from.uppercase()}` is equal to `$rounded°${to.uppercase()}`").queue()
     }
+
+    // helper for formatting numbers
+    private fun Double.format(): String =
+        if (this == this.toLong().toDouble()) "%d".format(this.toLong())
+        else "%.6f".format(this).trimEnd('0').trimEnd('.')
+
 }

@@ -49,23 +49,43 @@ class ConvertaBot {
             Choice("Millimeters (mm)", "mm")
         )
 
+        val dataUnits = listOf(
+            Choice("Bit (b)", "b"),
+            Choice("Byte (B)", "B"),
+            Choice("Kilobit (kb)", "kb"),
+            Choice("Kilobyte (kB)", "kB"),
+            Choice("Megabit (Mb)", "Mb"),
+            Choice("Megabyte (MB)", "MB"),
+            Choice("Gigabit (Gb)", "Gb"),
+            Choice("Gigabyte (GB)", "GB"),
+            Choice("Terabit (Tb)", "Tb"),
+            Choice("Terabyte (TB)", "TB")
+        )
+
         val temperatureCommand = SubcommandData("temperature", "Convert between Celsius, Fahrenheit, and Kelvin")
             .addOptions(
-                OptionData(OptionType.NUMBER, "value", "The temperature value to convert", true), // no choices here
+                OptionData(OptionType.NUMBER, "value", "The temperature value to convert", true),
                 OptionData(OptionType.STRING, "from", "The unit to convert from", true).addChoices(temperatureUnits),
                 OptionData(OptionType.STRING, "to", "The unit to convert to", true).addChoices(temperatureUnits)
             )
 
         val lengthCommand = SubcommandData("length", "Convert between common length units")
             .addOptions(
-                OptionData(OptionType.NUMBER, "value", "The length value to convert", true), // no choices here
+                OptionData(OptionType.NUMBER, "value", "The length value to convert", true),
                 OptionData(OptionType.STRING, "from", "The unit to convert from", true).addChoices(lengthUnits),
                 OptionData(OptionType.STRING, "to", "The unit to convert to", true).addChoices(lengthUnits)
             )
+        
+        val dataCommand = SubcommandData("data", "Convert between common digital storage units")
+            .addOptions(
+                OptionData(OptionType.NUMBER, "value", "The data value to convert", true),
+                OptionData(OptionType.STRING, "from", "The unit to convert from", true).addChoices(dataUnits),
+                OptionData(OptionType.STRING, "to", "The unit to convert to", true).addChoices(dataUnits)
+            )
 
         jda.updateCommands().addCommands(
-            Commands.slash("convert", "Convert temperature, length, and more")
-                .addSubcommands(temperatureCommand, lengthCommand),
+            Commands.slash("convert", "Convert temperature, length, data and more")
+                .addSubcommands(temperatureCommand, lengthCommand, dataCommand),
             Commands.slash("convertabot", "Converta bot commands")
                 .addSubcommands(SubcommandData("about", "Information about the Converta bot"))
         ).queue()

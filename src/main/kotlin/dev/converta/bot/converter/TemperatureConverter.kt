@@ -2,19 +2,13 @@ package dev.converta.bot.converter
 
 object TemperatureConverter {
 
-    private val unitAliases = mapOf(
-        "c" to "c",
-        "celsius" to "c",
-        "f" to "f",
-        "fahrenheit" to "f",
-        "k" to "k",
-        "kelvin" to "k"
-    )
+    private val canonicalUnits = setOf("c", "f", "k")
 
     fun convert(value: Double, from: String, to: String): Double? {
-        val normalizedFrom = unitAliases[from.lowercase()] ?: return null
-        val normalizedTo = unitAliases[to.lowercase()] ?: return null
+        val normalizedFrom = from.lowercase()
+        val normalizedTo = to.lowercase()
 
+        if (normalizedFrom !in canonicalUnits || normalizedTo !in canonicalUnits) return null
         if (normalizedFrom == normalizedTo) return value
 
         return when (normalizedFrom to normalizedTo) {
