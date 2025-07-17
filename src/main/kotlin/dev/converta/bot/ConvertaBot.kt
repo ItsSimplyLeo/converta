@@ -52,22 +52,16 @@ class ConvertaBot {
 
         val temperatureCommand = SubcommandData("temperature", "Convert between Celsius, Fahrenheit, and Kelvin")
             .addOptions(
-                OptionData(OptionType.NUMBER, "value", "The temperature value to convert", true)
-                    .addChoices(temperatureUnits),
-                OptionData(OptionType.STRING, "from", "The unit to convert from", true)
-                    .addChoices(temperatureUnits),
-                OptionData(OptionType.STRING, "to", "The unit to convert to", true)
-                    .addChoices(temperatureUnits)
+                OptionData(OptionType.NUMBER, "value", "The temperature value to convert", true), // no choices here
+                OptionData(OptionType.STRING, "from", "The unit to convert from", true).addChoices(temperatureUnits),
+                OptionData(OptionType.STRING, "to", "The unit to convert to", true).addChoices(temperatureUnits)
             )
 
         val lengthCommand = SubcommandData("length", "Convert between common length units")
             .addOptions(
-                OptionData(OptionType.NUMBER, "value", "The length value to convert", true)
-                    .addChoices(lengthUnits),
-                OptionData(OptionType.STRING, "from", "The unit to convert from", true)
-                    .addChoices(lengthUnits),
-                OptionData(OptionType.STRING, "to", "The unit to convert to", true)
-                    .addChoices(lengthUnits)
+                OptionData(OptionType.NUMBER, "value", "The length value to convert", true), // no choices here
+                OptionData(OptionType.STRING, "from", "The unit to convert from", true).addChoices(lengthUnits),
+                OptionData(OptionType.STRING, "to", "The unit to convert to", true).addChoices(lengthUnits)
             )
 
         jda.updateCommands().addCommands(
