@@ -14,11 +14,18 @@ import kotlin.math.round
 class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapter() {
 
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
-        if (event.name != "convert") return
-
-        when (event.subcommandName) {
-            "temperature" -> handleTemperature(event)
-            "length" -> handleLength(event)
+        when (event.name) {
+            "convert" -> {
+                when (event.subcommandName) {
+                    "temperature" -> handleTemperature(event)
+                    "length" -> handleLength(event)
+                }
+            }
+            "convertabot" -> {
+                if (event.subcommandName == "about") {
+                    handleAbout(event)
+                }
+            }
         }
     }
 
@@ -61,13 +68,22 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
     }
 
     private fun handleLength(event: SlashCommandInteractionEvent) {
-        val value = event.getOption("value")?.asDouble ?: return
-        val fromUnit = event.getOption("from")?.asString ?: return
-        val toUnit = event.getOption("to")?.asString ?: return
+        val value = event.getOption("value")?.asDouble ?: run {
+            event.reply("Please provide a valid number for value.").setEphemeral(true).queue()
+            return
+        }
+        val fromUnit = event.getOption("from")?.asString ?: run {
+            event.reply("Please specify the unit to convert from.").setEphemeral(true).queue()
+            return
+        }
+        val toUnit = event.getOption("to")?.asString ?: run {
+            event.reply("Please specify the unit to convert to.").setEphemeral(true).queue()
+            return
+        }
 
-        val result = LengthConverter.convert(value, fromUnit, toUnit)
+        val result = LengthConverter.convert(value, fromUnit.lowercase(), toUnit.lowercase())
         if (result == null) {
-            event.reply("Something went wrong with the conversion.").setEphemeral(true).queue()
+            event.reply("Something went wrong with the conversion. Supported units: meters, kilometers, miles, feet, inches, cm, mm, etc.").setEphemeral(true).queue()
             return
         }
 
@@ -76,13 +92,22 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
     }
 
     private fun handleTemperature(event: SlashCommandInteractionEvent) {
-        val value = event.getOption("value")?.asDouble ?: return
-        val from = event.getOption("from")?.asString ?: return
-        val to = event.getOption("to")?.asString ?: return
+        val value = event.getOption("value")?.asDouble ?: run {
+            event.reply("Please provide a valid number for value.").setEphemeral(true).queue()
+            return
+        }
+        val from = event.getOption("from")?.asString?.lowercase() ?: run {
+            event.reply("Please specify the unit to convert from.").setEphemeral(true).queue()
+            return
+        }
+        val to = event.getOption("to")?.asString?.lowercase() ?: run {
+            event.reply("Please specify the unit to convert to.").setEphemeral(true).queue()
+            return
+        }
 
         val result = TemperatureConverter.convert(value, from, to)
         if (result == null) {
-            event.reply("Invalid conversion path.").setEphemeral(true).queue()
+            event.reply("Invalid conversion path. Supported units: Celsius, Fahrenheit, Kelvin (c, f, k)").setEphemeral(true).queue()
             return
         }
 
