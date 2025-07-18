@@ -25,7 +25,7 @@ class ConvertaBot {
     lateinit var startupTime: Instant
     lateinit var jda: JDA
 
-    private var converters: List<Converter> = listOf(
+    var converters: List<Converter> = listOf(
         DataConverter,
         LengthConverter,
         SpeedConverter,
