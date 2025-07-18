@@ -1,7 +1,9 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("com.gradleup.shadow") version "9.0.0-rc1"
     kotlin("jvm") version "2.2.0"
     application
 }
@@ -20,12 +22,25 @@ dependencies {
     implementation(kotlin("stdlib"))
 }
 
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_21)
+    }
+}
+
 application {
     mainClass.set("dev.converta.bot.MainKt")
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_21)
+tasks {
+    build {
+        dependsOn(shadowJar)
+    }
+
+    shadowJar {
+        archiveFileName.set("converta.jar")
+        manifest {
+            attributes(mapOf("Main-Class" to "dev.converta.bot.MainKt"))
+        }
     }
 }
