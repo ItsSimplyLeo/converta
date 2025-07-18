@@ -1,6 +1,23 @@
 package dev.converta.bot.converter
 
-object DataConverter {
+import net.dv8tion.jda.api.interactions.commands.Command.Choice
+
+
+object DataConverter : Converter {
+
+    private val choiceUnits = listOf(
+        Choice("Bit (b)", "b"),
+        Choice("Byte (B)", "B"),
+        Choice("Kilobit (kb)", "kb"),
+        Choice("Kilobyte (kB)", "kB"),
+        Choice("Megabit (Mb)", "Mb"),
+        Choice("Megabyte (MB)", "MB"),
+        Choice("Gigabit (Gb)", "Gb"),
+        Choice("Gigabyte (GB)", "GB"),
+        Choice("Terabit (Tb)", "Tb"),
+        Choice("Terabyte (TB)", "TB")
+    )
+
     private val toBytes = mapOf(
         "b"  to 1.0 / 8,                            // 1 bit = 1/8 byte
         "B"  to 1.0,                                // 1 byte
@@ -14,12 +31,20 @@ object DataConverter {
         "TB" to 1024.0 * 1024 * 1024 * 1024         // 1 TB = 1,099,511,627,776 bytes
     )
 
-    fun convert(value: Double, from: String, to: String): Double? {
+    override fun name(): String {
+        return "Data"
+    }
+
+    override fun convert(value: Double, from: String, to: String): Double? {
         val f = from.trim()
         val t = to.trim()
         val fromBytes = toBytes[f] ?: return null
         val toBytes = toBytes[t] ?: return null
         val valueInBytes = value * fromBytes
         return valueInBytes / toBytes
+    }
+
+    override fun getChoices(): List<Choice> {
+        return choiceUnits
     }
 }

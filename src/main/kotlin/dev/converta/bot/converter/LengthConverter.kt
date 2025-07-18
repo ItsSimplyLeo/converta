@@ -1,6 +1,18 @@
 package dev.converta.bot.converter
 
-object LengthConverter {
+import net.dv8tion.jda.api.interactions.commands.Command.Choice
+
+object LengthConverter : Converter {
+
+    private val choiceUnits = listOf(
+        Choice("Meters (m)", "m"),
+        Choice("Kilometers (km)", "km"),
+        Choice("Miles (mi)", "mi"),
+        Choice("Feet (ft)", "ft"),
+        Choice("Inches (in)", "in"),
+        Choice("Centimeters (cm)", "cm"),
+        Choice("Millimeters (mm)", "mm")
+    )
 
     private val toMeters = mapOf(
         "m" to 1.0, // original meter unit
@@ -12,7 +24,11 @@ object LengthConverter {
         "in" to 0.0254 // inches to meters
     )
 
-    fun convert(value: Double, from: String, to: String): Double? {
+    override fun name(): String {
+        return "Length"
+    }
+
+    override fun convert(value: Double, from: String, to: String): Double? {
         val fromFactor = toMeters[from.lowercase()]
         val toFactor = toMeters[to.lowercase()]
 
@@ -20,5 +36,9 @@ object LengthConverter {
 
         val valueInMeters = value * fromFactor
         return valueInMeters / toFactor
+    }
+
+    override fun getChoices(): List<Choice> {
+        return choiceUnits
     }
 }

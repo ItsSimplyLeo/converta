@@ -13,6 +13,8 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import kotlin.math.round
 
+// TODO: use converter list to register commands
+// TODO: manage command handling in a more generic way
 class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapter() {
 
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {

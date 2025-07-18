@@ -1,17 +1,24 @@
 package dev.converta.bot.converter
 
-object TemperatureConverter {
+import net.dv8tion.jda.api.interactions.commands.Command
+import net.dv8tion.jda.api.interactions.commands.Command.Choice
 
-    private val canonicalUnits = setOf("c", "f", "k")
+object TemperatureConverter : Converter {
 
-    fun convert(value: Double, from: String, to: String): Double? {
-        val normalizedFrom = from.lowercase()
-        val normalizedTo = to.lowercase()
+    private val choiceUnits = listOf(
+        Choice("Celsius (°C)", "c"),
+        Choice("Fahrenheit (°F)", "f"),
+        Choice("Kelvin (K)", "k")
+    )
 
-        if (normalizedFrom !in canonicalUnits || normalizedTo !in canonicalUnits) return null
-        if (normalizedFrom == normalizedTo) return value
+    override fun name(): String {
+        return "Temperature"
+    }
 
-        return when (normalizedFrom to normalizedTo) {
+    override fun convert(value: Double, from: String, to: String): Double? {
+        if (from == to) return value
+
+        return when (from to to) {
             "c" to "f" -> celsiusToFahrenheit(value)
             "c" to "k" -> celsiusToKelvin(value)
             "f" to "c" -> fahrenheitToCelsius(value)
@@ -20,6 +27,11 @@ object TemperatureConverter {
             "k" to "f" -> kelvinToFahrenheit(value)
             else -> null
         }
+
+    }
+
+    override fun getChoices(): List<Command.Choice> {
+        return choiceUnits
     }
 
     private fun celsiusToFahrenheit(celsius: Double): Double {
