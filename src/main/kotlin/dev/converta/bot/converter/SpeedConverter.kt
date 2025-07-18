@@ -6,7 +6,7 @@ object SpeedConverter : Converter {
 
     private val choiceUnits = listOf(
         Choice("Miles per hour (mph)", "mph"),
-        Choice("Kilometers per hour (kph)", "kph"),
+        Choice("Kilometers per hour (kph)", "km/h"),
         Choice("Meters per second (m/s)", "m/s"),
         Choice("Feet per second (ft/s)", "ft/s"),
         Choice("Knots", "knots")
@@ -14,7 +14,7 @@ object SpeedConverter : Converter {
 
     private val toMetersPerSecond = mapOf(
         "m/s" to 1.0,               // Meters per second
-        "kph" to 1000.0 / 3600,    // Kilometers per hour
+        "km/h" to 1000.0 / 3600,    // Kilometers per hour
         "mph" to 1609.34 / 3600,   // Miles per hour
         "ft/s" to 0.3048,           // Feet per second
         "knots" to 1852.0 / 3600    // Knots

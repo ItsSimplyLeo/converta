@@ -5,6 +5,8 @@ import dev.converta.bot.converter.DataConverter
 import dev.converta.bot.converter.LengthConverter
 import dev.converta.bot.converter.SpeedConverter
 import dev.converta.bot.converter.TemperatureConverter
+import dev.converta.bot.converter.VolumeConverter
+import dev.converta.bot.converter.WeightConverter
 import dev.converta.bot.listener.SlashCommandListener
 import io.github.cdimascio.dotenv.dotenv
 import net.dv8tion.jda.api.JDA
@@ -27,7 +29,9 @@ class ConvertaBot {
         DataConverter,
         LengthConverter,
         SpeedConverter,
-        TemperatureConverter
+        TemperatureConverter,
+        VolumeConverter,
+        WeightConverter
     )
 
     fun start() {

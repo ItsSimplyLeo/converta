@@ -5,6 +5,8 @@ import dev.converta.bot.converter.DataConverter
 import dev.converta.bot.converter.LengthConverter
 import dev.converta.bot.converter.SpeedConverter
 import dev.converta.bot.converter.TemperatureConverter
+import dev.converta.bot.converter.VolumeConverter
+import dev.converta.bot.converter.WeightConverter
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
@@ -25,6 +27,12 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
                     "speed" -> handleSpeed(event)
                     "length" -> handleLength(event)
                     "temperature" -> handleTemperature(event)
+                    "volume" -> handleVolume(event)
+                    "weight" -> handleWeight(event)
+                    else -> {
+                        event.reply("Unknown conversion type.").setEphemeral(true).queue()
+                        return
+                    }
                 }
             }
             "convertabot" -> {
@@ -129,7 +137,7 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
 
         val result = SpeedConverter.convert(value, from, to)
         if (result == null) {
-            event.reply("Invalid conversion path. Supported units: m/s, km/h, mi/h, ft/s, knots").setEphemeral(true).queue()
+            event.reply("Invalid conversion path. Supported units: m/s, kp/h, mph, ft/s, knots").setEphemeral(true).queue()
             return
         }
 
@@ -159,6 +167,54 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
 
         val rounded = (round(result * 100)) / 100.0
         event.reply(":white_check_mark: `$value°${from.uppercase()}` is equal to `$rounded°${to.uppercase()}`").queue()
+    }
+
+    private fun handleVolume(event: SlashCommandInteractionEvent) {
+        val value = event.getOption("value")?.asDouble ?: run {
+            event.reply("Please provide a valid number for value.").setEphemeral(true).queue()
+            return
+        }
+        val from = event.getOption("from")?.asString?.lowercase() ?: run {
+            event.reply("Please specify the unit to convert from.").setEphemeral(true).queue()
+            return
+        }
+        val to = event.getOption("to")?.asString?.lowercase() ?: run {
+            event.reply("Please specify the unit to convert to.").setEphemeral(true).queue()
+            return
+        }
+
+        val result = VolumeConverter.convert(value, from, to)
+        if (result == null) {
+            event.reply("Invalid conversion path. Supported units: liters, milliliters, gallons, pints, quarts (L, mL, m3, cm3, gal, qt, pt)").setEphemeral(true).queue()
+            return
+        }
+
+        val rounded = (round(result * 100)) / 100.0
+        event.reply(":white_check_mark: `$value $from` is equal to `$rounded $to`").queue()
+    }
+
+    private fun handleWeight(event: SlashCommandInteractionEvent) {
+        val value = event.getOption("value")?.asDouble ?: run {
+            event.reply("Please provide a valid number for value.").setEphemeral(true).queue()
+            return
+        }
+        val from = event.getOption("from")?.asString?.lowercase() ?: run {
+            event.reply("Please specify the unit to convert from.").setEphemeral(true).queue()
+            return
+        }
+        val to = event.getOption("to")?.asString?.lowercase() ?: run {
+            event.reply("Please specify the unit to convert to.").setEphemeral(true).queue()
+            return
+        }
+
+        val result = WeightConverter.convert(value, from, to)
+        if (result == null) {
+            event.reply("Invalid conversion path. Supported units: kilograms, grams, pounds, ounces (kg, g, lb, oz)").setEphemeral(true).queue()
+            return
+        }
+
+        val rounded = (round(result * 100)) / 100.0
+        event.reply(":white_check_mark: `$value $from` is equal to `$rounded $to`").queue()
     }
 
     // helper for formatting numbers
