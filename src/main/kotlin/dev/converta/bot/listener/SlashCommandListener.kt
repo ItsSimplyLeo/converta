@@ -53,8 +53,6 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
         val uptime = Duration.between(convertaBot.startupTime, Instant.now())
         val formattedUptime = formatDuration(uptime)
         val guildCount = convertaBot.jda.guilds.size
-        val githubUrl = "https://github.com/ItsSimplyLeo/converta"
-        val inviteUrl = "https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&scope=bot%20applications.commands&permissions=8"
 
         val embed = EmbedBuilder()
             .setTitle("🤖 About Converta")
@@ -64,8 +62,8 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
             .addField("Uptime", formattedUptime, true)
             .addField("Guilds", guildCount.toString(), true)
             .addField("Supported Conversions", "🌡 Temperature\n📏 Length", false)
-            .addField("GitHub", "[ItsSimplyLeo/converta]($githubUrl)", true)
-            .addField("Invite", "[Click here to invite me!]($inviteUrl)", true)
+            .addField("GitHub", "[ItsSimplyLeo/converta](${convertaBot.githubUrl})", true)
+            .addField("Invite", "[Click here to invite me!](${convertaBot.inviteUrl})", true)
             .setFooter("Made with ❤️ using Kotlin + JDA")
             .setColor(0x00BFFF)
             .build()

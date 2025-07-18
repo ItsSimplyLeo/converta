@@ -22,6 +22,10 @@ class ConvertaBot {
 
     private val dotenv = dotenv()
     private val token = dotenv["DISCORD_TOKEN"] ?: error("DISCORD_TOKEN not found in .env")
+
+    val githubUrl = "https://github.com/ItsSimplyLeo/converta"
+    val inviteUrl = "https://discord.com/oauth2/authorize?client_id=1395511726941667358&scope=bot&permissions=274878171136"
+
     lateinit var startupTime: Instant
     lateinit var jda: JDA
 
