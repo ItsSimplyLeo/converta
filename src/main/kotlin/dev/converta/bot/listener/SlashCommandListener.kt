@@ -42,8 +42,16 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
                 }
             }
             "convertabot" -> {
-                if (event.subcommandName == "about") {
-                    handleAbout(event)
+                when (event.subcommandName) {
+                    event.subcommandName -> {
+                        handleAbout(event)
+                    }
+                    event.subcommandName -> {
+                        handleInvite(event)
+                    }
+                    else -> {
+                        event.reply("Unknown subcommand.").setEphemeral(true).queue()
+                    }
                 }
             }
         }
@@ -69,6 +77,16 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
             .build()
 
         event.replyEmbeds(embed).queue()
+    }
+
+    private fun handleInvite(event: SlashCommandInteractionEvent) {
+        val embed = EmbedBuilder()
+            .setTitle("Invite Converta to your server!")
+            .setDescription("Click the button below to invite Converta to your server.")
+            .addField("Invite Link", "[Click here to invite](${convertaBot.inviteUrl})", false)
+            .setColor(0x00BFFF)
+            .build()
+        event.replyEmbeds(embed).setEphemeral(true).queue()
     }
 
     private fun formatDuration(duration: Duration): String {
