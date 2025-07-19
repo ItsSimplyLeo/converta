@@ -61,7 +61,7 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
             .addField("Developer", "ItsSimplyLeo", true)
             .addField("Uptime", formattedUptime, true)
             .addField("Guilds", guildCount.toString(), true)
-            .addField("Supported Converstions", "🌡️ Temperature, 📏 Length, 📊 Data, 🚀 Speed, 💧 Volume, ⚖️ Weight", false)
+            .addField("Supported Conversions", "🌡️ Temperature, 📏 Length, 📊 Data, 🚀 Speed, 💧 Volume, ⚖️ Weight", false)
             .addField("GitHub", "[ItsSimplyLeo/converta](${convertaBot.githubUrl})", true)
             .addField("Invite", "[Click here to invite me!](${convertaBot.inviteUrl})", true)
             .setFooter("Made with ❤️ using Kotlin + JDA")
