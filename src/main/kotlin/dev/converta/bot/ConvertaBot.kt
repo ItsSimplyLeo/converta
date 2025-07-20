@@ -29,7 +29,7 @@ class ConvertaBot {
     lateinit var startupTime: Instant
     lateinit var jda: JDA
 
-    var converters: List<Converter> = listOf(
+    val converters = listOf(
         DataConverter,
         LengthConverter,
         SpeedConverter,
@@ -39,17 +39,24 @@ class ConvertaBot {
     )
 
     fun start() {
+        println("Converta is starting...")
+
         jda = JDABuilder.createDefault(token)
             .setActivity(Activity.playing("Converting units with Converta!"))
-            .addEventListeners(SlashCommandListener(this))  // Pass JDA if needed
+            .addEventListeners(SlashCommandListener(this))
             .build()
 
-        registerSlashCommands()
+        println("Registering slash commands...")
 
-        jda.awaitReady()
+        registerSlashCommands()
+        println("Slash commands registered successfully.")
         startupTime = Instant.now()
 
-        println("Converta is now online!")
+        println("Awaiting for JDA to be ready...")
+
+        jda.awaitReady()
+        println("JDA is ready! Startup time: ${startupTime.epochSecond} seconds since epoch.")
+        println("Converta has started successfully!")
     }
 
     private fun registerSlashCommands() {
