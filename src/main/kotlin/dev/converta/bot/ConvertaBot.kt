@@ -1,6 +1,5 @@
 package dev.converta.bot
 
-import dev.converta.bot.converter.Converter
 import dev.converta.bot.converter.DataConverter
 import dev.converta.bot.converter.LengthConverter
 import dev.converta.bot.converter.SpeedConverter
@@ -23,8 +22,10 @@ class ConvertaBot {
     private val dotenv = dotenv()
     private val token = dotenv["DISCORD_TOKEN"] ?: error("DISCORD_TOKEN not found in .env")
 
+    val websiteUrl = "https://converta.dev"
     val githubUrl = "https://github.com/ItsSimplyLeo/converta"
-    val inviteUrl = "https://discord.com/oauth2/authorize?client_id=1395511726941667358&scope=bot&permissions=274878171136"
+    val botInviteLink = "https://discord.com/oauth2/authorize?client_id=1395511726941667358&scope=bot&permissions=274878171136"
+    val supportServerInviteLink = "https://discord.gg/jhHG49UqwQ"
 
     lateinit var startupTime: Instant
     lateinit var jda: JDA
