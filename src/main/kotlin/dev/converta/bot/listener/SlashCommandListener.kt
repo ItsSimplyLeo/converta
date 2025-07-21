@@ -38,7 +38,14 @@ class SlashCommandListener(private val convertaBot: ConvertaBot) : ListenerAdapt
                     }
 
                     val rounded = (round(result * 100)) / 100.0
-                    event.reply(":white_check_mark: `$value ${fromUnit.uppercase()}` is equal to `$rounded ${toUnit.uppercase()}`").queue()
+                    val successEmbed = EmbedBuilder()
+                        .setTitle(":white_check_mark: Conversion Successful")
+                        .setDescription("Converted **$value ${fromUnit.uppercase()}** to **$rounded ${toUnit.uppercase()}**")
+                        .setFooter("Conversion requested by ${event.user.asTag}", event.user.effectiveAvatarUrl)
+                        .setTimestamp(Instant.now())
+                        .setColor(0x00FF7F)
+
+                    event.replyEmbeds(successEmbed.build()).queue()
                 }
             }
             "convertabot" -> {
